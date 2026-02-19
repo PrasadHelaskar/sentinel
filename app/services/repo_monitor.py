@@ -1,0 +1,54 @@
+from app.github.client import GitHubClient
+from app.core.state_manager import StateManager
+from app.services.artifact_service import ArtifactService
+from app.services.report_parser import ReportParser
+from app.services.log_parser import LogParser
+from app.services.summarizer import Summarizer
+from app.notifier.console_notifier import ConsoleNotifier
+import os
+
+class RepoMonitor:
+
+    def __init__(self, repos, artifact_name):
+        self.repos = repos
+        self.artifact_name = artifact_name
+
+    def process(self):
+        github = GitHubClient()
+
+        for repo in self.repos:
+            runs = github.get_workflow_runs(repo)
+
+            for run in runs[:3]:  # limit for safety
+                run_id = run["id"]
+
+                if StateManager.is_processed(repo, run_id):
+                    continue
+
+                artifacts = github.get_artifacts(repo, run_id)
+
+                target = next(
+                    (a for a in artifacts if a["name"] == self.artifact_name),
+                    None
+                )
+
+                if not target:
+                    continue
+
+                content = github.download_artifact(repo, target["id"])
+                extract_path = ArtifactService.extract_zip(content, f"artifacts/{repo}")
+
+                report_path = os.path.join(extract_path, "reports", "report.html")
+
+                report_summary = ReportParser.parse(report_path)
+                log_content = LogParser.get_latest_log(extract_path)
+
+                summary = Summarizer.generate(report_summary, log_content)
+
+                ConsoleNotifier.notify({
+                    "repo": repo,
+                    "run_id": run_id,
+                    **summary
+                })
+
+                StateManager.mark_processed(repo, run_id)
