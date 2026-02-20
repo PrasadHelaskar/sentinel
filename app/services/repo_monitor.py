@@ -1,3 +1,4 @@
+import os
 from app.github.client import GitHubClient
 from app.core.state_manager import StateManager
 from app.services.artifact_service import ArtifactService
@@ -5,7 +6,9 @@ from app.services.report_parser import ReportParser
 from app.services.log_parser import LogParser
 from app.services.summarizer import Summarizer
 from app.notifier.console_notifier import ConsoleNotifier
-import os
+from utils.logger import Logger
+
+log=Logger().get_logger(__name__)
 
 class RepoMonitor:
 
@@ -26,12 +29,13 @@ class RepoMonitor:
                     continue
 
                 artifacts = github.get_artifacts(repo, run_id)
+                target = None
 
-                target = next(
-                    (a for a in artifacts if a["name"] == self.artifact_name),
-                    None
-                )
-
+                for a in artifacts:
+                    if a["name"] == self.artifact_name:
+                        target=a
+                        break
+                    
                 if not target:
                     continue
 
@@ -42,6 +46,7 @@ class RepoMonitor:
 
                 report_summary = ReportParser.parse(report_path)
                 log_content = LogParser.get_latest_log(extract_path)
+                log.info("Creating the summery")
 
                 summary = Summarizer.generate(report_summary, log_content)
 
@@ -50,5 +55,5 @@ class RepoMonitor:
                     "run_id": run_id,
                     **summary
                 })
-
+                log.info("ConsoleNotifier done") 
                 StateManager.mark_processed(repo, run_id)
