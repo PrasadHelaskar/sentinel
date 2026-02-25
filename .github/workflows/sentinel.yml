@@ -8,6 +8,12 @@ on:
 jobs:
   monitor:
     runs-on: ubuntu-latest
+    env:
+      OWNER_TOKEN: ${{ secrets.OWNER_TOKEN }}
+      OWNER_OWNER: ${{ vars.OWNER_OWNER }}
+      OWNER_REPOS: ${{ vars.OWNER_REPOS }}
+      ARTIFACT_NAME: ${{ vars.ARTIFACT_NAME }}
+      LOGGER_BASE_PATH: ${{ vars.LOGGER_BASE_PATH }}
 
     steps:
       - uses: actions/checkout@v4
@@ -19,9 +25,4 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Run Sentinel
-        env:
-          OWNER_TOKEN: ${{ secrets.OWNER_TOKEN }}
-          OWNER_OWNER: ${{ vars.OWNER_OWNER }}
-          OWNER_REPOS: ${{ vars.OWNER_REPOS }}
-          ARTIFACT_NAME: ${{ vars.ARTIFACT_NAME }}
         run: python -m app.main
