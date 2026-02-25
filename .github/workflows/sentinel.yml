@@ -20,8 +20,8 @@ jobs:
 
       - name: Run Sentinel
         env:
-          GITHUB_TOKEN: ${{ secrets.ORG_PAT }}
-          GITHUB_OWNER: your_org
-          GITHUB_REPOS: repoA,repoB,repoC
+          OWNER_TOKEN: ${{ secrets.ORG_PAT }}
+          OWNER_OWNER: your_org
+          OWNER_REPOS: repoA,repoB,repoC
           ARTIFACT_NAME: pytest-report
         run: python -m app.main

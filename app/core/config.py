@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 load_dotenv(".config/.env")
 
 class Settings:
-    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-    OWNER = os.getenv("GITHUB_OWNER")
+    OWNER_TOKEN = os.getenv("OWNER_TOKEN")
+    OWNER = os.getenv("OWNER_OWNER")
 
-    REPOS = os.getenv("GITHUB_REPOS", "").split(",")
+    REPOS = os.getenv("OWNER_REPOS", "").split(",")
 
     ARTIFACT_NAME = os.getenv("ARTIFACT_NAME")
 

@@ -6,7 +6,7 @@ class GitHubClient:
 
     def __init__(self):
         self.headers = {
-            "Authorization": f"Bearer {settings.GITHUB_TOKEN}",
+            "Authorization": f"Bearer {settings.OWNER_TOKEN}",
             "Accept": "application/vnd.github+json"
         }
 
