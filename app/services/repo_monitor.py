@@ -46,7 +46,6 @@ class RepoMonitor:
 
                 report_summary = ReportParser.parse(report_path)
                 log_content = LogParser.get_latest_log(extract_path)
-                log.info("Creating the summery")
 
                 summary = Summarizer.generate(report_summary, log_content)
 
@@ -55,5 +54,4 @@ class RepoMonitor:
                     "run_id": run_id,
                     **summary
                 })
-                log.info("ConsoleNotifier done") 
                 StateManager.mark_processed(repo, run_id)
