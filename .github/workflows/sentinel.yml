@@ -20,8 +20,8 @@ jobs:
 
       - name: Run Sentinel
         env:
-          OWNER_TOKEN: ${{ secrets.ORG_PAT }}
-          OWNER_OWNER: your_org
-          OWNER_REPOS: repoA,repoB,repoC
-          ARTIFACT_NAME: pytest-report
+          OWNER_TOKEN: ${{ secrets.OWNER_TOKEN }}
+          OWNER_OWNER: ${{ vars.OWNER_OWNER }}
+          OWNER_REPOS: ${{ vars.OWNER_REPOS }}
+          ARTIFACT_NAME: ${{ vars.ARTIFACT_NAME }}
         run: python -m app.main
