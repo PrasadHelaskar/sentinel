@@ -32,7 +32,7 @@ jobs:
           git config --global user.name "PrasadHelaskar"
           git config --global user.email "helaskarprasad@gmail.com"
       
-          git add featured.json
+          git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "chore: update processed runs"
 
           git remote set-url origin https://x-access-token:${{ secrets.OWNER_TOKEN }}@github.com/PrasadHelaskar/sentinel.git
