@@ -1,11 +1,13 @@
 import os
 from app.github.client import GitHubClient
 from app.core.state_manager import StateManager
+from app.core.config import settings
 from app.services.artifact_service import ArtifactService
 from app.services.report_parser import ReportParser
 from app.services.log_parser import LogParser
 from app.services.summarizer import Summarizer
 from app.notifier.console_notifier import ConsoleNotifier
+from app.notifier.slack_notifier import SlackNotifier
 from utils.logger import Logger
 
 log=Logger().get_logger(__name__)
@@ -15,6 +17,7 @@ class RepoMonitor:
     def __init__(self, repos, artifact_name):
         self.repos = repos
         self.artifact_name = artifact_name
+        self.webhook_url=settings.SLACK_WEBHOOK_URL
 
     def process(self):
         github = GitHubClient()
@@ -54,4 +57,11 @@ class RepoMonitor:
                     "run_id": run_id,
                     **summary
                 })
+
+                SlackNotifier(self.webhook_url).send_run_summary({
+                    "repo": repo,
+                    "run_id": run_id,
+                    **summary
+                })
+
                 StateManager.mark_processed(repo, run_id)
