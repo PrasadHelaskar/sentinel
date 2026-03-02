@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OWNER_TOKEN: ${{ secrets.OWNER_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       OWNER_OWNER: ${{ vars.OWNER_OWNER }}
       OWNER_REPOS: ${{ vars.OWNER_REPOS }}
       ARTIFACT_NAME: ${{ vars.ARTIFACT_NAME }}
