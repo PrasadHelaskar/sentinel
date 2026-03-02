@@ -10,5 +10,7 @@ class Settings:
     REPOS = os.getenv("OWNER_REPOS", "").split(",")
 
     ARTIFACT_NAME = os.getenv("ARTIFACT_NAME")
+    
+    SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 
 settings = Settings()

@@ -1,0 +1,88 @@
+import requests
+import json
+
+
+class SlackNotifier:
+
+    def __init__(self, webhook_url):
+        self.webhook_url = webhook_url
+
+    def send_run_summary(self, data):
+        
+        total = data.get("total", 0)
+        passed = data.get("passed", 0)
+        failed = data.get("failed", 0)
+        skipped = data.get("skipped", 0)
+        error = data.get("error", 0)
+
+        # Determine status
+        is_success = failed == 0 and error == 0
+        status = "SUCCESS ✅" if is_success else "FAILED ❌"
+        color = "#2eb886" if is_success else "#e01e5a"
+
+        # Calculate pass rate
+        pass_rate = f"{(passed / total * 100):.1f}%" if total > 0 else "0%"
+
+        payload = {
+            "attachments": [
+                {
+                    "color": color,
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": f"🚀 *Test Run {status}*"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "fields": [
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Repository:*\n{data.get('repo')}"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Run ID:*\n{data.get('run_id')}"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Total Tests:*\n{total}"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Passed:*\n{passed}"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Failed:*\n{failed} ❌"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Skipped:*\n{skipped} ⏭"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Errors:*\n{error} ⚠"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": f"*Pass Rate:*\n{pass_rate}"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
+        response = requests.post(
+            self.webhook_url,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json"},
+            timeout=10
+        )
+
+        if response.status_code != 200:
+            raise Exception(f"Slack notification failed: {response.text}")
