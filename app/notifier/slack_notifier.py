@@ -1,6 +1,8 @@
 import requests
 import json
+from utils.logger import Logger
 
+log=Logger().get_logger(__name__)
 
 class SlackNotifier:
 
@@ -9,11 +11,13 @@ class SlackNotifier:
 
     def send_run_summary(self, data):
         
-        total = data.get("total", 0)
-        passed = data.get("passed", 0)
-        failed = data.get("failed", 0)
-        skipped = data.get("skipped", 0)
-        error = data.get("error", 0)
+        report = data.get("report", {})  # extract nested report
+
+        total = int(report.get("total", 0))
+        passed = int(report.get("passed", 0))
+        failed = int(report.get("failed", 0))
+        skipped = int(report.get("skipped", 0))
+        error = int(report.get("error", 0))
 
         # Determine status
         is_success = failed == 0 and error == 0
