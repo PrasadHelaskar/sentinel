@@ -1,6 +1,8 @@
 import requests
 import json
+from utils.logger import Logger
 
+log=Logger().get_logger(__name__)
 
 class SlackNotifier:
 
@@ -9,11 +11,13 @@ class SlackNotifier:
 
     def send_run_summary(self, data):
         
-        total = data.get("total", 0)
-        passed = data.get("passed", 0)
-        failed = data.get("failed", 0)
-        skipped = data.get("skipped", 0)
-        error = data.get("error", 0)
+        report = data.get("report", {})  # extract nested report
+
+        total = int(report.get("total", 0))
+        passed = int(report.get("passed", 0))
+        failed = int(report.get("failed", 0))
+        skipped = int(report.get("skipped", 0))
+        error = int(report.get("error", 0))
 
         # Determine status
         is_success = failed == 0 and error == 0
@@ -22,6 +26,24 @@ class SlackNotifier:
 
         # Calculate pass rate
         pass_rate = f"{(passed / total * 100):.1f}%" if total > 0 else "0%"
+
+        fields = [
+            {"type": "mrkdwn", "text": f"*Repository*\n{data.get('repo')}"},
+            {"type": "mrkdwn", "text": f"*Run ID*\n{data.get('run_id')}"},
+            {"type": "mrkdwn", "text": f"*Total*\n{total}"},
+            {"type": "mrkdwn", "text": f"*Passed*\n{passed}"},
+        ]
+
+        if failed > 0:
+            fields.append({"type": "mrkdwn", "text": f"*Failed*\n{failed} ❌"})
+
+        if error > 0:
+            fields.append({"type": "mrkdwn", "text": f"*Errors*\n{error} ⚠"})
+
+        if skipped > 0:
+            fields.append({"type": "mrkdwn", "text": f"*Skipped*\n{skipped} ⏭"})
+
+        fields.append({"type": "mrkdwn", "text": f"*Pass Rate*\n{pass_rate}"})
 
         payload = {
             "attachments": [
@@ -37,40 +59,8 @@ class SlackNotifier:
                         },
                         {
                             "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Repository:*\n{data.get('repo')}"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Run ID:*\n{data.get('run_id')}"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Total Tests:*\n{total}"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Passed:*\n{passed}"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Failed:*\n{failed} ❌"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Skipped:*\n{skipped} ⏭"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Errors:*\n{error} ⚠"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": f"*Pass Rate:*\n{pass_rate}"
-                                }
-                            ]
+                            "fields": fields
+                            
                         }
                     ]
                 }
