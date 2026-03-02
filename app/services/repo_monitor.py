@@ -58,10 +58,10 @@ class RepoMonitor:
                     **summary
                 })
 
-                # SlackNotifier(self.webhook_url).send_run_summary({
-                #     "repo": repo,
-                #     "run_id": run_id,
-                #     **summary
-                # })
+                SlackNotifier(self.webhook_url).send_run_summary({
+                    "repo": repo,
+                    "run_id": run_id,
+                    **summary
+                })
 
                 StateManager.mark_processed(repo, run_id)
