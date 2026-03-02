@@ -2,7 +2,7 @@ name: Sentinel Org Monitor
 
 on:
   schedule:
-    - cron: "45 */3 * * *"
+    # - cron: "* */3 * * *"
   workflow_dispatch:
 
 jobs:
