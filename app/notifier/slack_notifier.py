@@ -1,13 +1,15 @@
 import requests
 import json
+
+from app.core.config import settings
 from utils.logger import Logger
 
 log=Logger().get_logger(__name__)
 
 class SlackNotifier:
 
-    def __init__(self, webhook_url):
-        self.webhook_url = webhook_url
+    def __init__(self):
+        self.webhook_url=settings.SLACK_WEBHOOK_URL
 
     def send_run_summary(self, data):
         
@@ -45,6 +47,10 @@ class SlackNotifier:
 
         fields.append({"type": "mrkdwn", "text": f"*Pass Rate*\n{pass_rate}"})
 
+        log_excerpt_recived = data.get("log_excerpt", "No anomalies detected in logs.")
+
+        log_excerpt = log_excerpt_recived[:800]
+
         payload = {
             "attachments": [
                 {
@@ -60,7 +66,22 @@ class SlackNotifier:
                         {
                             "type": "section",
                             "fields": fields
-                            
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": f"*Log Intelligence*\n```{log_excerpt}```"
+                            }
+                        },
+                        {
+                            "type": "context",
+                            "elements": [
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "— Sentinel 🛡️ Guarding your pipelines"
+                                }
+                            ]
                         }
                     ]
                 }
