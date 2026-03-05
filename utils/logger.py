@@ -36,7 +36,7 @@ class Logger:
             console_handler = logging.StreamHandler()
             console_handler.setLevel(log_level)
 
-            formatter = logging.Formatter('%(asctime)s - %(classname)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter('[Sentinel] %(asctime)s - %(classname)s - %(levelname)s - %(message)s')
             file_handler.setFormatter(formatter)
             console_handler.setFormatter(formatter)
 

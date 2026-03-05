@@ -1,7 +1,7 @@
 import os
 from app.github.client import GitHubClient
+from app.analyzer.rule_based_analyzer import RuleBasedAnalyzer
 from app.core.state_manager import StateManager
-from app.core.config import settings
 from app.services.artifact_service import ArtifactService
 from app.services.report_parser import ReportParser
 from app.services.log_parser import LogParser
@@ -17,7 +17,6 @@ class RepoMonitor:
     def __init__(self, repos, artifact_name):
         self.repos = repos
         self.artifact_name = artifact_name
-        self.webhook_url=settings.SLACK_WEBHOOK_URL
 
     def process(self):
         github = GitHubClient()
@@ -48,17 +47,21 @@ class RepoMonitor:
                 report_path = os.path.join(extract_path, "reports", "report.html")
 
                 report_summary = ReportParser.parse(report_path)
-                log_content = LogParser.get_latest_log(extract_path)
+                raw_logs = LogParser.get_latest_log(extract_path)
 
+                analysis = RuleBasedAnalyzer().analyze(raw_logs)
+
+                log_content= analysis.log_snippet
+                
                 summary = Summarizer.generate(report_summary, log_content)
-
+                
                 ConsoleNotifier.notify({
                     "repo": repo,
                     "run_id": run_id,
                     **summary
                 })
 
-                SlackNotifier(self.webhook_url).send_run_summary({
+                SlackNotifier().send_run_summary({
                     "repo": repo,
                     "run_id": run_id,
                     **summary
