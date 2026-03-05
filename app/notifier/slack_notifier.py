@@ -1,13 +1,15 @@
 import requests
 import json
+
+from app.core.config import settings
 from utils.logger import Logger
 
 log=Logger().get_logger(__name__)
 
 class SlackNotifier:
 
-    def __init__(self, webhook_url):
-        self.webhook_url = webhook_url
+    def __init__(self):
+        self.webhook_url=settings.SLACK_WEBHOOK_URL
 
     def send_run_summary(self, data):
         
