@@ -77,6 +77,19 @@ Currently supported:
 
 The notification layer is extensible for additional integrations.
 
+### Log Intelligence
+
+Sentinel analyzes automation logs to extract meaningful failure signals.
+
+Instead of sending raw logs, Sentinel identifies:
+
+- Failed test names
+- Assertion errors
+- Exception traces
+- Relevant log snippets
+
+This provides actionable failure context in notifications.
+
 ## 📂 Project Structure
 
 ```bash
@@ -106,7 +119,7 @@ sentinel/
 │
 ├── artifacts/
 ├── data/
-│    └── processed_runs.py
+│    └── processed_runs.json
 ├── requirements.txt 
 └── README.md
 ```
