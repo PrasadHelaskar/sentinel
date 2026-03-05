@@ -7,6 +7,13 @@ class ConsoleNotifier:
     @staticmethod
     def notify(summary):
         log.info("====== SENTINEL REPORT ======\n")
-        log.info("Report Stats: %s", summary["report"])
-        log.info("Log Preview: %s", summary["log_excerpt"])
+
+        log.info("Repository: %s", summary["repo"])
+        log.info("Run ID: %s\n", summary["run_id"])
+
+        log.info("Report Summary: %s",summary["report"])
+
+        log.info("Log Intelligence:\n %s",summary["log_excerpt"])
+
+        log.info("Sentinel 🛡️ Guarding your pipelines.")
         log.info("================================\n")

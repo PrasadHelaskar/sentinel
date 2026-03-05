@@ -31,3 +31,5 @@ class RuleBasedAnalyzer(LogAnalyzer):
                 break
 
         return result
+
+        #https://www.workable.com/c/e9dc08f4-bd14-44d0-b7db-64ab90d1fd1f
