@@ -49,10 +49,8 @@ class RepoMonitor:
                 report_summary = ReportParser.parse(report_path)
                 raw_logs = LogParser.get_latest_log(extract_path)
 
-                analysis = RuleBasedAnalyzer().analyze(raw_logs)
+                log_content = RuleBasedAnalyzer().analyze(raw_logs)
 
-                log_content= analysis.log_snippet
-                
                 summary = Summarizer.generate(report_summary, log_content)
                 
                 ConsoleNotifier.notify({
@@ -61,10 +59,10 @@ class RepoMonitor:
                     **summary
                 })
 
-                SlackNotifier().send_run_summary({
-                    "repo": repo,
-                    "run_id": run_id,
-                    **summary
-                })
+                # SlackNotifier().send_run_summary({
+                #     "repo": repo,
+                #     "run_id": run_id,
+                #     **summary
+                # })
 
                 StateManager.mark_processed(repo, run_id)
