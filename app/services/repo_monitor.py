@@ -59,10 +59,10 @@ class RepoMonitor:
                     **summary
                 })
 
-                # SlackNotifier().send_run_summary({
-                #     "repo": repo,
-                #     "run_id": run_id,
-                #     **summary
-                # })
+                SlackNotifier().send_run_summary({
+                    "repo": repo,
+                    "run_id": run_id,
+                    **summary
+                })
 
                 StateManager.mark_processed(repo, run_id)
