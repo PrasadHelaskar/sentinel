@@ -1,12 +1,15 @@
 class Summarizer:
 
     @staticmethod
-    def generate(report_summary, log_content):
+    def generate(report_summary, analysis_result):
 
-        if isinstance(log_content, list):
-            excerpt = "\n".join(log_content)
+        if isinstance(analysis_result.log_snippet,list):
+            excerpt = "\n".join(analysis_result.log_snippet)
         else:
-            excerpt = log_content
+            excerpt = analysis_result.log_snippet
+
+        if not excerpt and analysis_result.failed_test:
+            excerpt = analysis_result.failed_test
 
         if not excerpt:
             excerpt = "No anomalies detected in logs."

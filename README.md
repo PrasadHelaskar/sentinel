@@ -1,5 +1,9 @@
 # 🛡️ Sentinel
 
+Sentinel is a lightweight automation observability service designed to monitor test execution artifacts, analyze reports, detect failures, and deliver actionable notifications.
+
+It provides a centralized intelligence layer on top of CI/CD automation pipelines.
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)]()
 [![CI](https://github.com/PrasadHelaskar/sentinel/actions/workflows/sentinel.yml/badge.svg)](https://github.com/PrasadHelaskar/sentinel/actions)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular-blueviolet)]()
@@ -8,10 +12,6 @@
 [![Scheduler](https://img.shields.io/badge/Scheduler-Cron%20Supported-orange)]()
 [![Notifications](https://img.shields.io/badge/Notifications-Slack%20Enabled-4A154B?logo=slack&logoColor=white)]()
 [![Status](https://img.shields.io/badge/Status-Active-success)]()
-
-Sentinel is a lightweight automation observability service designed to monitor test execution artifacts, analyze reports, detect failures, and deliver actionable notifications.
-
-It provides a centralized intelligence layer on top of CI/CD automation pipelines.
 
 ## 📌 Overview
 
